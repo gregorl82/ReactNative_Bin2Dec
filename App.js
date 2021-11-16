@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 
 export default function App() {
-  const [binaryInput, setBinaryInput] = useState('');
-  const [errorMessage, setErrorMessage] = useState('Enter 0 or 1 only!');
+  const [binaryInput, setBinaryInput] = useState();
+  const [errorMessage, setErrorMessage] = useState();
   const [result, setResult] = useState();
 
   return (
@@ -27,18 +27,14 @@ export default function App() {
       />
 
       {errorMessage && (
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <MaterialIcons name="error" size={24} color="red" />
-          <Text style={{ color: 'red', fontSize: 18, fontWeight: 'bold' }}>
-            {errorMessage}
-          </Text>
+        <View style={styles.errorMessageContainer}>
+          <MaterialIcons name="error" size={24} color={'#FF0000'} />
+          <Text style={styles.errorMessageText}>{errorMessage}</Text>
         </View>
       )}
 
-      <TouchableOpacity
-        style={{ padding: 16, backgroundColor: 'coral', borderRadius: 8 }}
-      >
-        <Text style={{ color: 'white', fontWeight: 'bold' }}>CALCULATE</Text>
+      <TouchableOpacity style={styles.buttonStyle}>
+        <Text style={styles.buttonText}>CALCULATE</Text>
       </TouchableOpacity>
 
       <Text>RESULT: {result}</Text>
@@ -51,8 +47,23 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F4C2C2',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  errorMessageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  errorMessageText: {
+    color: '#FF0000',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  buttonStyle: {
+    padding: 16,
+    backgroundColor: '#FF7F50',
+    borderRadius: 8,
+  },
+  buttonText: { color: '#FFFFFF', fontWeight: 'bold' },
 });
