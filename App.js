@@ -5,23 +5,28 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Button, Input } from 'react-native-elements';
 import { binaryToDecimal } from './util/binaryToDecimal';
 
+const regex = /^[0-1]$/;
+
 export default function App() {
   const [binaryInput, setBinaryInput] = useState();
   const [result, setResult] = useState();
+  const [error, setError] = useState(false);
 
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
         <Input
-          placeholder={'Enter a binary number'}
-          maxLength={8}
-          value={binaryInput}
           onChangeText={(text) => {
             setBinaryInput(text);
           }}
+          placeholder={'Enter a binary number'}
+          maxLength={8}
+          value={binaryInput}
+          keyboardType={'number-pad'}
+          errorMessage={error && 'Input can only be 0 or 1'}
         />
         <Button
-          disabled={!binaryInput}
+          disabled={!binaryInput || !regex.test(binaryInput)}
           title={'Calculate'}
           onPress={() => {
             const result = binaryToDecimal(binaryInput);
