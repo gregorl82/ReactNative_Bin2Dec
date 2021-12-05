@@ -2,8 +2,9 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import {
   Alert,
-  StyleSheet,
+  Keyboard,
   KeyboardAvoidingView,
+  StyleSheet,
   Text,
   View,
 } from 'react-native';
@@ -13,21 +14,29 @@ import { binaryToDecimal } from './util/binaryToDecimal';
 
 export default function App() {
   const [binaryInput, setBinaryInput] = useState('');
+  const [history, setHistory] = useState([]);
 
   const handleChangeText = (text) => {
     setBinaryInput(text);
   };
 
   const handleCalculate = () => {
+    Keyboard.dismiss();
     const result = binaryToDecimal(binaryInput).toString();
-    Alert.alert('Result', `${binaryInput} = ${result}`, [
+    const resultString = `${binaryInput} = ${result}`;
+    Alert.alert('Result', resultString, [
       {
         text: 'OK',
         onPress: () => {
+          setHistory([...history, resultString]);
           setBinaryInput('');
         },
       },
     ]);
+  };
+
+  const handleReset = () => {
+    setHistory([]);
   };
 
   return (
@@ -35,7 +44,7 @@ export default function App() {
       <KeyboardAvoidingView style={styles.container}>
         <View>
           <Text style={styles.titleText}>Binary to decimal calculator</Text>
-          <Text style={styles.rubric}>
+          <Text style={styles.rubricText}>
             Enter a binary number then press Calculate to convert the number to
             decimal.
           </Text>
@@ -49,8 +58,30 @@ export default function App() {
             value={binaryInput}
             keyboardType={'number-pad'}
           />
-          <Button title={'Calculate'} onPress={handleCalculate} />
+          <Button
+            buttonStyle={styles.calculateButton}
+            title={'Calculate'}
+            onPress={handleCalculate}
+            type={'solid'}
+          />
+          <Button
+            buttonStyle={styles.resetButton}
+            title={'Reset'}
+            onPress={handleReset}
+            type={'outline'}
+          />
         </View>
+
+        {history.length > 0 && (
+          <View>
+            <Text style={styles.historyText}>Calculation history</Text>
+            {history.map((item, index) => (
+              <Text key={item}>
+                {index + 1}: {item}
+              </Text>
+            ))}
+          </View>
+        )}
 
         <StatusBar style="auto" />
       </KeyboardAvoidingView>
@@ -71,9 +102,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingBottom: 25,
   },
-  rubric: {
+  rubricText: {
     fontSize: 18,
     lineHeight: 20,
     paddingBottom: 25,
   },
+  historyText: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    paddingBottom: 5,
+  },
+  calculateButton: { margin: 5, backgroundColor: 'rebeccapurple' },
+  resetButton: { margin: 5 },
 });
