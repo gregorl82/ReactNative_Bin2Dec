@@ -15,29 +15,47 @@ import { binaryToDecimal } from './util/binaryToDecimal';
 export default function App() {
   const [binaryInput, setBinaryInput] = useState('');
   const [history, setHistory] = useState([]);
+  const [renderError, setRenderError] = useState(false);
+
+  const regex = /[2-9.-]/g;
 
   const handleChangeText = (text) => {
-    setBinaryInput(text);
+    if (text.match(regex)) {
+      setBinaryInput(text.replace(regex, ''));
+    } else {
+      setBinaryInput(text.slice(0, -1));
+    }
+
+    const input = text.replace(regex, '');
+    setBinaryInput(input);
+    setRenderError(false);
   };
 
   const handleCalculate = () => {
-    Keyboard.dismiss();
-    const result = binaryToDecimal(binaryInput).toString();
-    const resultString = `${binaryInput} = ${result}`;
-    Alert.alert('Result', resultString, [
-      {
-        text: 'OK',
-        onPress: () => {
-          setHistory([...history, resultString]);
-          setBinaryInput('');
+    if (!binaryInput) {
+      setRenderError(true);
+    } else {
+      Keyboard.dismiss();
+      const result = binaryToDecimal(binaryInput).toString();
+      const resultString = `${binaryInput} = ${result}`;
+      Alert.alert('Result', resultString, [
+        {
+          text: 'OK',
+          onPress: () => {
+            setHistory([...history, resultString]);
+            setBinaryInput('');
+          },
         },
-      },
-    ]);
+      ]);
+    }
   };
 
   const handleReset = () => {
+    setRenderError('');
     setHistory([]);
   };
+
+  const errorMsg = renderError ? <Text>Input required</Text> : undefined;
 
   return (
     <SafeAreaProvider>
@@ -46,7 +64,7 @@ export default function App() {
           <Text style={styles.titleText}>Binary to decimal calculator</Text>
           <Text style={styles.rubricText}>
             Enter a binary number then press Calculate to convert the number to
-            decimal.
+            decimal:
           </Text>
         </View>
 
@@ -57,6 +75,7 @@ export default function App() {
             maxLength={8}
             value={binaryInput}
             keyboardType={'number-pad'}
+            errorMessage={errorMsg}
           />
           <Button
             buttonStyle={styles.calculateButton}
@@ -100,6 +119,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 25,
     fontWeight: 'bold',
+    paddingTop: 25,
     paddingBottom: 25,
   },
   rubricText: {
@@ -111,7 +131,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
-    paddingBottom: 5,
+    paddingBottom: 10,
+    paddingTop: 15,
+  },
+  errorText: {
+    fontWeight: 'bold',
+    color: 'red',
   },
   calculateButton: { margin: 5, backgroundColor: 'rebeccapurple' },
   resetButton: { margin: 5 },
