@@ -1,6 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Button, Input } from 'react-native-elements';
 import { binaryToDecimal } from './util/binaryToDecimal';
@@ -26,18 +32,28 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <View style={styles.container}>
-        <Input
-          onChangeText={handleChangeText}
-          placeholder={'Enter a binary number'}
-          maxLength={8}
-          value={binaryInput}
-          keyboardType={'number-pad'}
-        />
-        <Button title={'Calculate'} onPress={handleCalculate} />
+      <KeyboardAvoidingView style={styles.container}>
+        <View>
+          <Text style={styles.titleText}>Binary to decimal calculator</Text>
+          <Text style={styles.rubric}>
+            Enter a binary number then press Calculate to convert the number to
+            decimal.
+          </Text>
+        </View>
+
+        <View>
+          <Input
+            onChangeText={handleChangeText}
+            placeholder={'e.g. 10101'}
+            maxLength={8}
+            value={binaryInput}
+            keyboardType={'number-pad'}
+          />
+          <Button title={'Calculate'} onPress={handleCalculate} />
+        </View>
 
         <StatusBar style="auto" />
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaProvider>
   );
 }
@@ -46,22 +62,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignContent: 'center',
+    justifyContent: 'flex-start',
   },
-  errorMessageContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  errorMessageText: {
-    color: '#FF0000',
-    fontSize: 18,
+  titleText: {
+    textAlign: 'center',
+    fontSize: 25,
     fontWeight: 'bold',
+    paddingBottom: 25,
   },
-  buttonStyle: {
-    padding: 16,
-    backgroundColor: '#FF7F50',
-    borderRadius: 8,
+  rubric: {
+    fontSize: 18,
+    lineHeight: 20,
+    paddingBottom: 25,
   },
-  buttonText: { color: '#FFFFFF', fontWeight: 'bold' },
 });
